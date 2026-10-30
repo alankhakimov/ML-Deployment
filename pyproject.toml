@@ -6,11 +6,13 @@ readme = "README.md"
 authors = [
     { name = "Alan Khakimov", email = "109626573+alankhakimov@users.noreply.github.com" }
 ]
-requires-python = ">=3.15"
+requires-python = ">=3.12"
 dependencies = [
     "pandas>=3.1.0",
     "pillow>=13.0.0",
     "scikit-learn>=1.9.1",
+    "torch",
+    "torchvision",
 ]
 
 [project.scripts]
@@ -19,3 +21,17 @@ ml-deployment = "ml_deployment:main"
 [build-system]
 requires = ["uv_build>=0.13.1,<0.14.0"]
 build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+]
+
+[[tool.uv.index]]
+name = "pytorch-cu130"
+url = "https://download.pytorch.org/whl/cu130"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu130" }
+torchvision = { index = "pytorch-cu130" }

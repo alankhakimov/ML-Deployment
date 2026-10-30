@@ -31,3 +31,15 @@ HOP -> 2 means it is part of our train and validation set
 The split folders will be created prior to any training:
 pool 1489 {'benign': 0.677, 'malignant': 0.323} # used for validation too
 test 386 {'benign': 0.674, 'malignant': 0.326} # used strictly for testing
+
+Only 4 samples seem to have missmatches dimensions:
+    size mismatches: 4 [
+    ('bus_0856-l', (387, 353), (387, 405)), 
+    ('bus_0857-r', (384, 393), (384, 409)), 
+    ('bus_0912-l', (360, 352), (360, 354)), 
+    ('bus_0990-l', (540, 352), (540, 354))]
+Their associated BBOXs
+    bus_0856-l | bbox: [46,29,312,176] | actual: (387, 353) | in test: True
+    bus_0857-r | bbox: [28,3,296,217] | actual: (384, 393) | in test: False
+    bus_0912-l | bbox: [47,96,301,177] | actual: (360, 352) | in test: False
+    bus_0990-l | bbox: [119,54,298,176] | actual: (540, 352) | in test: True

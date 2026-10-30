@@ -43,3 +43,7 @@ Their associated BBOXs
     bus_0857-r | bbox: [28,3,296,217] | actual: (384, 393) | in test: False
     bus_0912-l | bbox: [47,96,301,177] | actual: (360, 352) | in test: False
     bus_0990-l | bbox: [119,54,298,176] | actual: (540, 352) | in test: True
+
+Model Choice: RadImageNet
+Credit to: Mei, Xueyan and Liu, Zelong and Robson, Philip M. and Marinelli, Brett and Huang, Mingqian and Doshi, Amish and Jacobi, Adam and Cao, Chendi and Link, Katherine E. and Yang, Thomas and Wang, Ying and Greenspan, Hayit and Deyer, Timothy and Fayad, Zahi A. and Yang, Yang
+

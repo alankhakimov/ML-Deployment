@@ -4,3 +4,4 @@ data/
 *.pth
 *.onnx
 __pycache__/
+models/

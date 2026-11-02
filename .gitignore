@@ -5,3 +5,5 @@ data/
 *.onnx
 __pycache__/
 models/
+preview_*.png
+

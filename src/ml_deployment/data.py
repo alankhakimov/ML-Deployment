@@ -1,5 +1,7 @@
 from pathlib import Path
 import pandas as pd
+import numpy as np
+from sklearn.model_selection import StratifiedGroupKFold
 
 ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 DATA_DIR = ROOT_DIR / "data"
@@ -24,6 +26,18 @@ def load_split(name: str) -> pd.DataFrame:
     df["label"] = df["Pathology"].map(LABEL_MAP)
     df["path"] = df["ID"].map(img_path)
     return df[["ID", "Case", "label", "path"]]
+
+def make_folds(pool: pd.DataFrame, n_folds: int, seed: int) -> pd.DataFrame:
+    """Assign each pool row to a validation fold, keeping each Case in one fold
+    and balancing labels across folds."""
+    sgkf = StratifiedGroupKFold(n_splits=n_folds, shuffle=True, random_state=seed)
+    fold = np.full(len(pool), -1)
+    for k, (_, val_idx) in enumerate(sgkf.split(pool, pool["label"], groups=pool["Case"])):
+        fold[val_idx] = k
+    assert (fold >= 0).all()
+    out = pool.copy()
+    out["fold"] = fold
+    return out
 
 if __name__ == "__main__":
     pool, test = load_split("pool"), load_split("test")

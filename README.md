@@ -47,3 +47,7 @@ Their associated BBOXs
 Model Choice: RadImageNet
 Credit to: Mei, Xueyan and Liu, Zelong and Robson, Philip M. and Marinelli, Brett and Huang, Mingqian and Doshi, Amish and Jacobi, Adam and Cao, Chendi and Link, Katherine E. and Yang, Thomas and Wang, Ying and Greenspan, Hayit and Deyer, Timothy and Fayad, Zahi A. and Yang, Yang
 
+Noticed that there are crosshairs and text labels on data samples:
+    Seemingly similar on both benign and malignant cases -> crosshairs used to identify the lesion
+
+The plan is to train a baseline model with the current dataset, if we notice performance drop post augmentation or by scanner then we will re-asses

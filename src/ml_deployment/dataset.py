@@ -3,7 +3,7 @@ import torch
 import numpy as np
 from PIL import Image
 from torch.utils.data import Dataset
-from data import load_split
+from .data import load_split
 
 # Class handles image, label loading for PyTorch DataLoader
 class BUSDataset(Dataset):

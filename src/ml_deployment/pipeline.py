@@ -3,14 +3,14 @@ from dataclasses import dataclass
 import torch
 from torch.utils.data import DataLoader
 
-from ml_deployment.data import load_split, make_folds
-from ml_deployment.dataset import BUSDataset
-from ml_deployment.transforms import build_transform
-
+from .data import load_split, make_folds
+from .dataset import BUSDataset
+from .transforms import build_transform
+from .model import build_model as make_model
 
 @dataclass
 class Config:
-    weights_path: str = ""  # fill in
+    weights_path: str = r"C:\Users\Alan\Documents\GitHub\ML-Deployment\models\RadImageNet_pytorch\RadImageNet_pytorch\ResNet50.pt"
     img_size: int = 224
     n_folds: int = 5
     val_fold: int = 0
@@ -26,6 +26,12 @@ class Pipeline:
         self.cfg = cfg
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         torch.manual_seed(cfg.seed)
+        self.train_df = None
+        self.val_df = None
+        self.tf = None
+        self.train_loader = None
+        self.val_loader = None
+        self.model = None
 
     # ---- stage 1: which images go where -------------------------------------
     def load_data(self):
@@ -60,7 +66,7 @@ class Pipeline:
 
     # ---- stage 4: the network -----------------------------------------------
     def build_model(self):
-        raise NotImplementedError
+        self.model = make_model(self.cfg.weights_path).to(self.device)
 
     # ---- stages still to write ----------------------------------------------
     def train(self):

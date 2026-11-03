@@ -19,6 +19,7 @@ class Config:
     lr: float = 1e-4
     epochs: int = 10
     seed: int = 42
+    freeze_backbone: bool = True
 
 
 class Pipeline:
@@ -32,6 +33,8 @@ class Pipeline:
         self.train_loader = None
         self.val_loader = None
         self.model = None
+        self.loss_fn = None
+        self.optimizer = None
 
     # ---- stage 1: which images go where -------------------------------------
     def load_data(self):
@@ -68,9 +71,42 @@ class Pipeline:
     def build_model(self):
         self.model = make_model(self.cfg.weights_path).to(self.device)
 
-    # ---- stages still to write ----------------------------------------------
+    def build_optimizer(self):
+        assert self.model is not None, "run build_model first"
+        for p_ in self.model.backbone.parameters():
+            p_.requires_grad = not self.cfg.freeze_backbone
+
+        trainable = [p_ for p_ in self.model.parameters() if p_.requires_grad]
+        print(f"trainable parameters: {sum(p_.numel() for p_ in trainable):,}")
+
+        self.loss_fn = torch.nn.BCEWithLogitsLoss()
+        self.optimizer = torch.optim.AdamW(trainable, lr=self.cfg.lr)
+
+    def set_train_mode(self):
+        self.model.train()
+        if self.cfg.freeze_backbone:
+            self.model.backbone.eval()   # stop BatchNorm statistics from updating
+
     def train(self):
-        raise NotImplementedError
+        assert None not in (self.train_loader, self.model, self.optimizer), \
+            "run load_data, build_transforms, build_loaders, build_model, build_optimizer first"
+
+        for epoch in range(self.cfg.epochs):
+            self.set_train_mode()
+            total, n = 0.0, 0
+
+            for x, y in self.train_loader:
+                x, y = x.to(self.device), y.to(self.device)
+
+                self.optimizer.zero_grad()
+                loss = self.loss_fn(self.model(x).squeeze(1), y)
+                loss.backward()
+                self.optimizer.step()
+
+                total += loss.item() * len(y)    # weight by batch size; the last batch is smaller
+                n += len(y)
+
+            print(f"epoch {epoch + 1}/{self.cfg.epochs} | train loss {total / n:.4f}")
 
     def evaluate(self):
         raise NotImplementedError
